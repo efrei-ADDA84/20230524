@@ -8,7 +8,6 @@ class OpenWeatherMapWrapper:
         self.longitude = longitude
         self.base_url = "https://api.openweathermap.org/data/2.5/weather?"
 
-        # Vérifier que les variables d'environnement sont définies
         if api_key is None or latitude is None or longitude is None:
             raise ValueError("Les variables d'environnement API_KEY, LATITUDE et LONGITUDE doivent être définies.")
 
