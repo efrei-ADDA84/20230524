@@ -44,3 +44,13 @@ Avant d'exécuter le projet avec Docker, s'assurer d'avoir Docker installé sur 
    ```bash
    docker build -t openweathermap_wrapper .
    ```
+
+### Exécution du conteneur Docker
+
+Une fois que l'image Docker a été construite avec succès, il est possible d'exécuter un conteneur Docker à partir de cette image.
+
+Exécutez le conteneur Docker en remplaçant les variables d'environnement par les valeurs appropriées avec la commande suivante :
+
+```bash
+docker run --env API_KEY="YOUR_API_KEY" --env LAT="YOUR_LATITUDE" --env LONG="YOUR_LONGITUDE" openweathermap_wrapper
+
