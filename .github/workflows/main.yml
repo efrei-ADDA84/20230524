@@ -1,0 +1,30 @@
+name: WeatherApp Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      docker:
+        image: docker:20.10.8
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+
+    - name: Run unit tests
+      run: |
+        pytest
+  
+    - name: Build Docker image
+      run: |
+        docker build -t my-tp-app:latest .
