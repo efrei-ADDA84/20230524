@@ -15,7 +15,7 @@ jobs:
 
     # Construire l'image Docker
     - name: Construire l'image Docker
-      run: docker build -t zeork7/test-lab1:latest .
+      run: docker build -t tomhuser/tp3:latest .
 
     # Se connecter à Docker Hub
     - name: Se connecter à Docker Hub
@@ -23,7 +23,7 @@ jobs:
 
     # Pousser l'image Docker vers Docker Hub
     - name: Pousser l'image Docker vers Docker Hub
-      run: docker push zeork7/test-lab1:latest
+      run: docker push tomhuser/tp3:latest
 
     # Se connecter à Azure Container Registry
     - name: Se connecter à Azure Container Registry

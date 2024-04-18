@@ -40,5 +40,5 @@ def weather():
 
 if __name__ == '__main__':
     # Démarrez le serveur Flask en écoutant sur le port 80 sur toutes les adresses disponibles
-    app.run(debug=True , host='0.0.0.0',port=80)
+    app.run(debug=True , host='0.0.0.0', port=80)
 
