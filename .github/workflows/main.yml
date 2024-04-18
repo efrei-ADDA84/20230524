@@ -48,3 +48,26 @@ jobs:
         push: true
         tags: ${{ secrets.REGISTRY_LOGIN_SERVER }}/20230524:latest
         
+  deploy:
+    runs-on: ubuntu-latest 
+
+    steps: 
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: 'Connexion via Azure CLI'
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: 'Déploiement vers Azure Container Instance'
+      uses: azure/aci-deploy@v1
+      with:
+        resource-group: ${{ secrets.RESOURCE_GROUP }}
+        dns-name-label: devops-20230524
+        image: ${{ secrets.REGISTRY_LOGIN_SERVER }}/20230524:latest
+        name: 20230524
+        location: 'francesouth'
+        registry-login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+        registry-username: ${{ secrets.REGISTRY_USERNAME }}
+        registry-password: ${{ secrets.REGISTRY_PASSWORD }}
