@@ -1,11 +1,13 @@
 from flask import Flask, request, jsonify
 from app import OpenWeatherMapWrapper
 import os
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 
 # Créez une instance de la classe OpenWeatherMapWrapper avec votre clé API
-api_key = os.getenv("API_KEY")
+load_dotenv()
+api_key = os.environ.get("API_KEY")
 
 # Route pour récupérer les données météorologiques en fonction de la latitude et de la longitude
 @app.route('/weather')

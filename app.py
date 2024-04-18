@@ -1,5 +1,6 @@
 import requests
 import os
+from dotenv import load_dotenv
 
 class OpenWeatherMapWrapper:
     def __init__(self, api_key, latitude, longitude):
@@ -32,6 +33,7 @@ class OpenWeatherMapWrapper:
         return celsius, fahrenheit
 
 if __name__ == "__main__":
+    load_dotenv()
     api_key = os.getenv("API_KEY")
     latitude = os.getenv("LAT")
     longitude = os.getenv("LONG")
