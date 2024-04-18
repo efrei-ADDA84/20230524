@@ -1,4 +1,4 @@
-name: WeatherApp Workflow
+name: CI
 
 on:
   push:
@@ -6,29 +6,68 @@ on:
       - main
 
 jobs:
-  build_and_deploy:
+  build_and_push:
     runs-on: ubuntu-latest
-
+    
     steps:
-    - name: Checkout code
+    - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Install dependencies
-      run: |
-        pip install -r requirements.txt
+    # Construire l'image Docker
+    - name: Construire l'image Docker
+      run: docker build -t zeork7/test-lab1:latest .
 
-    - name: Run unit tests
-      run: |
-        pytest
+    # Se connecter à Docker Hub
+    - name: Se connecter à Docker Hub
+      run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
-    - name: Login to Azure Container Registry
-      uses: azure/docker-login@v1
+    # Pousser l'image Docker vers Docker Hub
+    - name: Pousser l'image Docker vers Docker Hub
+      run: docker push zeork7/test-lab1:latest
+
+    # Se connecter à Azure Container Registry
+    - name: Se connecter à Azure Container Registry
+      uses: azure/login@v1
       with:
-        login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    # Se connecter à Azure Container Registry
+    - name: Connexion à Azure Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ${{ secrets.REGISTRY_LOGIN_SERVER }}
         username: ${{ secrets.REGISTRY_USERNAME }}
         password: ${{ secrets.REGISTRY_PASSWORD }}
 
-    - name: Build and push Docker image
-      run: |
-        docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ github.sha }}:latest
-        docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ github.sha }}:latest
+    # Construire et pousser l'image Docker vers Azure Container Registry
+    - name: Construire et pousser l'image Docker vers ACR
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        tags: ${{ secrets.REGISTRY_LOGIN_SERVER }}/20230524:latest
+        
+  deploy:
+    runs-on: ubuntu-latest 
+
+    steps: 
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: 'Connexion via Azure CLI'
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: 'Déploiement vers Azure Container Instance'
+      uses: azure/aci-deploy@v1
+      with:
+        resource-group: ${{ secrets.RESOURCE_GROUP }}
+        dns-name-label: devops-20230524
+        image: ${{ secrets.REGISTRY_LOGIN_SERVER }}/20230524:latest
+        name: 20230524
+        location: 'francecentral'
+        registry-login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+        registry-username: ${{ secrets.REGISTRY_USERNAME }}
+        registry-password: ${{ secrets.REGISTRY_PASSWORD }}
