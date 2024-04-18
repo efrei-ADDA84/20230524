@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 app = Flask(__name__)
 
-# Créez une instance de la classe OpenWeatherMapWrapper avec votre clé API
+# Chargement de la clé API
 load_dotenv()
 api_key = os.environ.get("API_KEY")
 
